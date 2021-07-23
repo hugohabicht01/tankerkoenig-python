@@ -1,7 +1,6 @@
-import exceptions
-import models
+import tankerkoenig
+from tankerkoenig import client, exceptions, models
 from unittest import TestCase
-from client import Client
 from os import getenv
 import responses
 
@@ -11,7 +10,7 @@ class TestList(TestCase):
 
     def setUp(self):
         self.api_key = getenv("TANKERKOENIG_API_KEY")
-        self.client = Client(api_key=self.api_key)
+        self.client = tankerkoenig.Client(api_key=self.api_key)
 
     @responses.activate
     def test_list(self):
@@ -31,7 +30,7 @@ class TestList(TestCase):
             "petrol_type": models.Petrol.DIESEL,
             "sort": models.SortingMethod.DISTANCE,
         }
-        res: models.List_PetrolStations = self.client.list(**params)
+        _ = self.client.list(**params)
         req_url = responses.calls[0].request.url
 
         EXPECTED_URL = f"https://creativecommons.tankerkoenig.de/json/list.php?lat=50.114634&lng=8.687657&rad=2&sort=dist&type=diesel&apikey={self.api_key}"
@@ -50,7 +49,7 @@ class TestList(TestCase):
             status=200,
             content_type="application/json",
         )
-        tmp_client = Client(api_key="definitelyNotARealKey")
+        tmp_client = client.Client(api_key="definitelyNotARealKey")
         params = {
             "lat": 50.114634,
             "lng": 8.687657,

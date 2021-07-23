@@ -1,3 +1,3 @@
-from client import Client
-from exceptions import *
-from models import *
+from tankerkoenig.client import Client
+from tankerkoenig import models
+from tankerkoenig import exceptions

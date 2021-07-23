@@ -1,7 +1,7 @@
 from typing import List
 import requests
-import exceptions
-import models
+from . import models
+from . import exceptions
 
 
 class Client:
@@ -73,7 +73,7 @@ class Client:
             else:
                 raise exceptions.api_error(msg)
 
-        prices_model: models.List_PetrolStations = models.List_PetrolStations(**prices)
+        prices_model = models.List_PetrolStations(**prices)
 
         return prices_model
 
@@ -97,7 +97,7 @@ class Client:
             else:
                 raise exceptions.api_error(msg)
 
-        details_model: models.Details_Model = models.Details_Model(**details)
+        details_model = models.Details_Model(**details)
 
         return details_model
 
@@ -124,6 +124,6 @@ class Client:
             else:
                 raise exceptions.api_error(msg)
 
-        prices_model: models.Prices_Model = models.Prices_Model(**prices)
+        prices_model = models.Prices_Model(**prices)
 
         return prices_model

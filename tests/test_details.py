@@ -1,7 +1,5 @@
-import exceptions
-import models
+from tankerkoenig import client, models, exceptions
 from unittest import TestCase
-from client import Client
 from os import getenv
 import responses
 
@@ -11,7 +9,7 @@ class TestDetails(TestCase):
 
     def setUp(self):
         self.api_key = getenv("TANKERKOENIG_API_KEY")
-        self.client = Client(api_key=self.api_key)
+        self.client = client.Client(api_key=self.api_key)
 
     @responses.activate
     def test_details(self):
@@ -23,9 +21,7 @@ class TestDetails(TestCase):
             content_type="application/json",
         )
 
-        res: models.Details_Model = self.client.details(
-            id="3a96b82f-7342-40ba-a1d7-9cde3fbb3c11"
-        )
+        _ = self.client.details(id="3a96b82f-7342-40ba-a1d7-9cde3fbb3c11")
         req_url = responses.calls[0].request.url
 
         EXPECTED_URL = f"https://creativecommons.tankerkoenig.de/json/detail.php?id=3a96b82f-7342-40ba-a1d7-9cde3fbb3c11&apikey={self.api_key}"
@@ -35,7 +31,7 @@ class TestDetails(TestCase):
 
     @responses.activate
     def test_details_bad_api_key(self):
-        tmp_client = Client(api_key="definitelyNotARealKey")
+        tmp_client = client.Client(api_key="definitelyNotARealKey")
 
         responses.add(
             responses.GET,
