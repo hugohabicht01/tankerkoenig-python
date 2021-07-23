@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Any, Union
+from typing import List, Any, Union, Dict
 from enum import Enum
 import uuid
 
@@ -70,7 +70,7 @@ class Prices_Model(BaseModel):
     ok: bool
     license: str
     data: str
-    prices: List[Prices_Station]
+    prices: Dict[str, Prices_Station]
 
 
 class Petrol(Enum):

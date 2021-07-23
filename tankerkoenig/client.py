@@ -102,25 +102,29 @@ class Client:
         return details_model
 
     def prices(self, *, ids: List[str]) -> models.Prices_Model:
-        url = f"{self.BASE_URL}/prices.php"
-        r = requests.get(url, params={"ids": ids, "apikey": self.api_key})
+        if len(ids) > 10:
+            raise exceptions.too_many_ids
+        # The api has a weird way of constructing URLs with Arrays, thats why I need to manually construct the URL
+        # The parameter ids is a string of all the ids, seperated by commas
+        idsString = ",".join(ids)
+        url = f"{self.BASE_URL}/prices.php?ids={idsString}&apikey={self.api_key}"
+        r = requests.get(url)
         if r.status_code != 200:
             raise exceptions.api_error(f"HTTP status code: {r.status_code}")
 
         prices: dict = r.json()
 
-        if prices["ok"] != True or prices["status"] != "ok":
+        if prices["ok"] != True:
             msg = prices["message"]
             if (
                 msg == "apikey nicht angegeben, falsch, oder im falschen Format"
                 or msg[:38] == "ERROR:  invalid input syntax for uuid:"
             ):
                 raise exceptions.invalid_api_key
-            elif (
-                msg == "eine oder mehrere Tankstellen-IDs nicht im korrekten Format"
-                or msg == "parameter error"
-            ):
+            elif msg == "eine oder mehrere Tankstellen-IDs nicht im korrekten Format":
                 raise exceptions.bad_id
+            elif msg == "parameter error":
+                raise exceptions.bad_parameter
             else:
                 raise exceptions.api_error(msg)
 
