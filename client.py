@@ -1,3 +1,4 @@
+from typing import List
 import requests
 import exceptions
 import models
@@ -22,7 +23,7 @@ class Client:
         rad: float,
         petrol_type: models.Petrol,
         sort: models.SortingMethod,
-    ) -> models.PetrolStations:
+    ) -> models.List_PetrolStations:
         """
         Fetches all petrol stations in a certain radius from a position and returns their prices
 
@@ -44,7 +45,7 @@ class Client:
             exceptions.bad_radius: Invalid radius
         """
         url = f"{self.BASE_URL}/list.php"
-        r: requests.models.Response = requests.get(
+        r = requests.get(
             url,
             params={
                 "lat": lat,
@@ -56,8 +57,7 @@ class Client:
             },
         )
         if r.status_code != 200:
-            raise exceptions.api_error
-
+            raise exceptions.api_error(f"HTTP status code: {r.status_code}")
         prices: dict = r.json()
 
         if prices["ok"] != True or prices["status"] != "ok":
@@ -73,6 +73,57 @@ class Client:
             else:
                 raise exceptions.api_error(msg)
 
-        prices_model: models.PetrolStations = models.PetrolStations(**prices)
+        prices_model: models.List_PetrolStations = models.List_PetrolStations(**prices)
+
+        return prices_model
+
+    def details(self, *, id: str) -> models.Details_Model:
+        url = f"{self.BASE_URL}/detail.php"
+        r = requests.get(url, params={"id": id, "apikey": self.api_key})
+        if r.status_code != 200:
+            raise exceptions.api_error(f"HTTP status code: {r.status_code}")
+
+        details: dict = r.json()
+
+        if details["ok"] != True or details["status"] != "ok":
+            msg = details["message"]
+            if (
+                msg == "apikey nicht angegeben, falsch, oder im falschen Format"
+                or msg[:38] == "ERROR:  invalid input syntax for uuid:"
+            ):
+                raise exceptions.invalid_api_key
+            elif msg == "parameter error":
+                raise exceptions.bad_id
+            else:
+                raise exceptions.api_error(msg)
+
+        details_model: models.Details_Model = models.Details_Model(**details)
+
+        return details_model
+
+    def prices(self, *, ids: List[str]) -> models.Prices_Model:
+        url = f"{self.BASE_URL}/prices.php"
+        r = requests.get(url, params={"ids": ids, "apikey": self.api_key})
+        if r.status_code != 200:
+            raise exceptions.api_error(f"HTTP status code: {r.status_code}")
+
+        prices: dict = r.json()
+
+        if prices["ok"] != True or prices["status"] != "ok":
+            msg = prices["message"]
+            if (
+                msg == "apikey nicht angegeben, falsch, oder im falschen Format"
+                or msg[:38] == "ERROR:  invalid input syntax for uuid:"
+            ):
+                raise exceptions.invalid_api_key
+            elif (
+                msg == "eine oder mehrere Tankstellen-IDs nicht im korrekten Format"
+                or msg == "parameter error"
+            ):
+                raise exceptions.bad_id
+            else:
+                raise exceptions.api_error(msg)
+
+        prices_model: models.Prices_Model = models.Prices_Model(**prices)
 
         return prices_model

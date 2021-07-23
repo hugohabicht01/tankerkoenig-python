@@ -20,3 +20,6 @@ class bad_radius(Exception):
 
 class bad_petrol_type(Exception):
     pass
+
+class bad_id(Exception):
+    pass
