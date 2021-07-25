@@ -10,6 +10,8 @@ responses = "*"
 
 [dev-packages]
 black = "*"
+pipenv-setup = "*"
+chardet = "*"
 
 [requires]
 python_version = "3.8"
