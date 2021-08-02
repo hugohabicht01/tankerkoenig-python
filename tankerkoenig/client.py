@@ -5,6 +5,18 @@ from . import exceptions
 from enum import Enum
 
 
+class Petrol(Enum):
+    DIESEL = "diesel"
+    E5 = "e5"
+    E10 = "e10"
+    ALL = "all"
+
+
+class SortingMethod(Enum):
+    DISTANCE = "dist"
+    PRICE = "price"
+
+
 class Client:
     def __init__(
         self,
@@ -22,8 +34,8 @@ class Client:
         lat: float,
         lng: float,
         rad: float,
-        petrol_type: models.Petrol,
-        sort: models.SortingMethod,
+        petrol_type: Petrol,
+        sort: SortingMethod,
     ) -> models.List_PetrolStations:
         """
         Fetches all petrol stations in a certain radius from a position and returns their prices
@@ -32,8 +44,8 @@ class Client:
             lat (float): Latitude
             lng (float): Longitude
             rad (float): Search radius
-            petrol_type (models.Petrol): Petrol enum
-            sort (models.SortingMethod): Sorting enum
+            petrol_type (Petrol): Petrol enum
+            sort (SortingMethod): Sorting enum
 
         Returns:
           models.PetrolStations: Object with all the petrol stations in the surroundings
@@ -85,10 +97,10 @@ class Client:
 
         Args:
             id (str): ID of a petrol station
-        
+
         Returns:
             models.Details_Model: Details of the petrol station
-        
+
         Raises:
             exceptions.api_error: Unspecified error returned from the tankerkoenig API
             exceptions.invalid_api_key: Bad API key
@@ -123,10 +135,10 @@ class Client:
 
         Args:
             ids (List[str]): List of IDs of petrol stations
-        
+
         Returns:
             models.Prices_Model: Current prices of all stations
-        
+
         Raises:
             exceptions.api_error: Unspecified error returned from the tankerkoenig API
             exceptions.invalid_api_key: Bad API key
@@ -162,15 +174,3 @@ class Client:
         prices_model = models.Prices_Model(**prices)
 
         return prices_model
-
-
-class Petrol(Enum):
-    DIESEL = "diesel"
-    E5 = "e5"
-    E10 = "e10"
-    ALL = "all"
-
-
-class SortingMethod(Enum):
-    DISTANCE = "dist"
-    PRICE = "price"
