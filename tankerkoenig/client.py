@@ -64,14 +64,13 @@ class Client:
             msg = prices["message"]
             if msg == "apikey nicht angegeben, falsch, oder im falschen Format":
                 raise exceptions.invalid_api_key
-            elif msg == "lat nicht angegeben, oder ausserhalb der gültigen Grenzen":
+            if msg == "lat nicht angegeben, oder ausserhalb der gültigen Grenzen":
                 raise exceptions.bad_latitude
-            elif msg == "lng nicht angegeben, oder ausserhalb der gültigen Grenzen":
+            if msg == "lng nicht angegeben, oder ausserhalb der gültigen Grenzen":
                 raise exceptions.bad_longitude
-            elif msg == "rad nicht angegeben, oder ausserhalb des gültigen Bereichs":
+            if msg == "rad nicht angegeben, oder ausserhalb des gültigen Bereichs":
                 raise exceptions.bad_radius
-            else:
-                raise exceptions.api_error(msg)
+            raise exceptions.api_error(msg)
 
         prices_model = models.List_PetrolStations(**prices)
 
@@ -92,10 +91,9 @@ class Client:
                 or msg[:38] == "ERROR:  invalid input syntax for uuid:"
             ):
                 raise exceptions.invalid_api_key
-            elif msg == "parameter error":
+            if msg == "parameter error":
                 raise exceptions.bad_id
-            else:
-                raise exceptions.api_error(msg)
+            raise exceptions.api_error(msg)
 
         details_model = models.Details_Model(**details)
 
@@ -121,12 +119,11 @@ class Client:
                 or msg[:38] == "ERROR:  invalid input syntax for uuid:"
             ):
                 raise exceptions.invalid_api_key
-            elif msg == "eine oder mehrere Tankstellen-IDs nicht im korrekten Format":
+            if msg == "eine oder mehrere Tankstellen-IDs nicht im korrekten Format":
                 raise exceptions.bad_id
-            elif msg == "parameter error":
+            if msg == "parameter error":
                 raise exceptions.bad_parameter
-            else:
-                raise exceptions.api_error(msg)
+            raise exceptions.api_error(msg)
 
         prices_model = models.Prices_Model(**prices)
 
