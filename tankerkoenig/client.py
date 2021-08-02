@@ -28,11 +28,11 @@ class Client:
         Fetches all petrol stations in a certain radius from a position and returns their prices
 
         Args:
-            lat: Latitude
-            lng: Longitude
-            rad: Search radius
-            petrol_type: Petrol enum
-            sort: Sorting enum
+            lat (float): Latitude
+            lng (float): Longitude
+            rad (float): Search radius
+            petrol_type (models.Petrol): Petrol enum
+            sort (models.SortingMethod): Sorting enum
 
         Returns:
           models.PetrolStations: Object with all the petrol stations in the surroundings
@@ -43,6 +43,7 @@ class Client:
             exceptions.bad_latitude: Latitude out of bounds or wrong format
             exceptions.bad_longitude: Longitude out of bounds or wrong format
             exceptions.bad_radius: Invalid radius
+            requests.exceptions.RequestException: Request error
         """
         url = f"{self.BASE_URL}/list.php"
         r = requests.get(
@@ -55,6 +56,7 @@ class Client:
                 "type": petrol_type.value,
                 "apikey": self.api_key,
             },
+            timeout=3,
         )
         if r.status_code != 200:
             raise exceptions.api_error(f"HTTP status code: {r.status_code}")
@@ -78,8 +80,23 @@ class Client:
         return prices_model
 
     def details(self, *, id: str) -> models.Details_Model:
+        """
+        Fetches details about a petrol station with a given id
+
+        Args:
+            id (str): ID of a petrol station
+        
+        Returns:
+            models.Details_Model: Details of the petrol station
+        
+        Raises:
+            exceptions.api_error: Unspecified error returned from the tankerkoenig API
+            exceptions.invalid_api_key: Bad API key
+            exceptions.bad_id: Invalid ID
+            requests.exceptions.RequestException: Request error
+        """
         url = f"{self.BASE_URL}/detail.php"
-        r = requests.get(url, params={"id": id, "apikey": self.api_key})
+        r = requests.get(url, params={"id": id, "apikey": self.api_key}, timeout=3)
         if r.status_code != 200:
             raise exceptions.api_error(f"HTTP status code: {r.status_code}")
 
@@ -102,13 +119,29 @@ class Client:
         return details_model
 
     def prices(self, *, ids: List[str]) -> models.Prices_Model:
+        """
+        Fetches current prices of up to ten petrol stations by IDs
+
+        Args:
+            ids (List[str]): List of IDs of petrol stations
+        
+        Returns:
+            models.Prices_Model: Current prices of all stations
+        
+        Raises:
+            exceptions.api_error: Unspecified error returned from the tankerkoenig API
+            exceptions.invalid_api_key: Bad API key
+            exceptions.bad_id: one or more invalid IDs
+            exceptions.bad_parameter: one or more invalid IDs
+            requests.exceptions.RequestException: Request error
+        """
         if len(ids) > 10:
             raise exceptions.too_many_ids
         # The api has a weird way of constructing URLs with Arrays, thats why I need to manually construct the URL
         # The parameter ids is a string of all the ids, seperated by commas
         idsString = ",".join(ids)
         url = f"{self.BASE_URL}/prices.php?ids={idsString}&apikey={self.api_key}"
-        r = requests.get(url)
+        r = requests.get(url, timeout=3)
         if r.status_code != 200:
             raise exceptions.api_error(f"HTTP status code: {r.status_code}")
 
