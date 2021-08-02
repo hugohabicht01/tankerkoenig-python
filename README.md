@@ -7,7 +7,6 @@ Every request requires an API key that can be requested [here](https://creativec
 ## Example
 ```python
 import tankerkoenig
-from tankerkoenig import models
 
 client = tankerkoenig.Client(api_key="00000000-0000-0000-0000-000000000002")
 
@@ -15,8 +14,8 @@ petrol_stations = client.list(
     lat=50.114634,
     lng=8.687657,
     rad=2,
-    petrol_type=models.Petrol.DIESEL,
-    sort=models.SortingMethod.DISTANCE,
+    petrol_type=tankerkoenig.Petrol.DIESEL,
+    sort=tankerkoenig.SortingMethod.DISTANCE,
 )
 print(petrol_stations)
 ```

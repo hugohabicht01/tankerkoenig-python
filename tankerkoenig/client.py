@@ -2,6 +2,7 @@ from typing import List
 import requests
 from . import models
 from . import exceptions
+from enum import Enum
 
 
 class Client:
@@ -128,3 +129,15 @@ class Client:
         prices_model = models.Prices_Model(**prices)
 
         return prices_model
+
+
+class Petrol(Enum):
+    DIESEL = "diesel"
+    E5 = "e5"
+    E10 = "e10"
+    ALL = "all"
+
+
+class SortingMethod(Enum):
+    DISTANCE = "dist"
+    PRICE = "price"

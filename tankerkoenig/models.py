@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from typing import List, Any, Union, Dict
-from enum import Enum
 import uuid
 
 # TODO: Move models into files for the different routes
@@ -71,15 +70,3 @@ class Prices_Model(BaseModel):
     license: str
     data: str
     prices: Dict[str, Prices_Station]
-
-
-class Petrol(Enum):
-    DIESEL = "diesel"
-    E5 = "e5"
-    E10 = "e10"
-    ALL = "all"
-
-
-class SortingMethod(Enum):
-    DISTANCE = "dist"
-    PRICE = "price"
