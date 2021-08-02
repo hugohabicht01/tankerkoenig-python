@@ -10,7 +10,7 @@ class Client:
         api_key: str = None,
         base_url: str = "https://creativecommons.tankerkoenig.de/json",
     ):
-        if api_key == None:
+        if api_key is None:
             raise exceptions.invalid_api_key
         self.api_key = api_key
         self.BASE_URL = base_url
@@ -60,7 +60,7 @@ class Client:
             raise exceptions.api_error(f"HTTP status code: {r.status_code}")
         prices: dict = r.json()
 
-        if prices["ok"] != True or prices["status"] != "ok":
+        if prices["ok"] is not True or prices["status"] != "ok":
             msg = prices["message"]
             if msg == "apikey nicht angegeben, falsch, oder im falschen Format":
                 raise exceptions.invalid_api_key
@@ -85,7 +85,7 @@ class Client:
 
         details: dict = r.json()
 
-        if details["ok"] != True or details["status"] != "ok":
+        if details["ok"] is not True or details["status"] != "ok":
             msg = details["message"]
             if (
                 msg == "apikey nicht angegeben, falsch, oder im falschen Format"
@@ -114,7 +114,7 @@ class Client:
 
         prices: dict = r.json()
 
-        if prices["ok"] != True:
+        if prices["ok"] is not True:
             msg = prices["message"]
             if (
                 msg == "apikey nicht angegeben, falsch, oder im falschen Format"
