@@ -2,6 +2,7 @@ from typing import List
 import requests
 from . import models
 from . import exceptions
+from enum import Enum
 
 
 class Client:
@@ -10,7 +11,7 @@ class Client:
         api_key: str = None,
         base_url: str = "https://creativecommons.tankerkoenig.de/json",
     ):
-        if api_key == None:
+        if api_key is None:
             raise exceptions.invalid_api_key
         self.api_key = api_key
         self.BASE_URL = base_url
@@ -62,18 +63,17 @@ class Client:
             raise exceptions.api_error(f"HTTP status code: {r.status_code}")
         prices: dict = r.json()
 
-        if prices["ok"] != True or prices["status"] != "ok":
+        if prices["ok"] is not True or prices["status"] != "ok":
             msg = prices["message"]
             if msg == "apikey nicht angegeben, falsch, oder im falschen Format":
                 raise exceptions.invalid_api_key
-            elif msg == "lat nicht angegeben, oder ausserhalb der gültigen Grenzen":
+            if msg == "lat nicht angegeben, oder ausserhalb der gültigen Grenzen":
                 raise exceptions.bad_latitude
-            elif msg == "lng nicht angegeben, oder ausserhalb der gültigen Grenzen":
+            if msg == "lng nicht angegeben, oder ausserhalb der gültigen Grenzen":
                 raise exceptions.bad_longitude
-            elif msg == "rad nicht angegeben, oder ausserhalb des gültigen Bereichs":
+            if msg == "rad nicht angegeben, oder ausserhalb des gültigen Bereichs":
                 raise exceptions.bad_radius
-            else:
-                raise exceptions.api_error(msg)
+            raise exceptions.api_error(msg)
 
         prices_model = models.List_PetrolStations(**prices)
 
@@ -102,17 +102,16 @@ class Client:
 
         details: dict = r.json()
 
-        if details["ok"] != True or details["status"] != "ok":
+        if details["ok"] is not True or details["status"] != "ok":
             msg = details["message"]
             if (
                 msg == "apikey nicht angegeben, falsch, oder im falschen Format"
                 or msg[:38] == "ERROR:  invalid input syntax for uuid:"
             ):
                 raise exceptions.invalid_api_key
-            elif msg == "parameter error":
+            if msg == "parameter error":
                 raise exceptions.bad_id
-            else:
-                raise exceptions.api_error(msg)
+            raise exceptions.api_error(msg)
 
         details_model = models.Details_Model(**details)
 
@@ -147,20 +146,31 @@ class Client:
 
         prices: dict = r.json()
 
-        if prices["ok"] != True:
+        if prices["ok"] is not True:
             msg = prices["message"]
             if (
                 msg == "apikey nicht angegeben, falsch, oder im falschen Format"
                 or msg[:38] == "ERROR:  invalid input syntax for uuid:"
             ):
                 raise exceptions.invalid_api_key
-            elif msg == "eine oder mehrere Tankstellen-IDs nicht im korrekten Format":
+            if msg == "eine oder mehrere Tankstellen-IDs nicht im korrekten Format":
                 raise exceptions.bad_id
-            elif msg == "parameter error":
+            if msg == "parameter error":
                 raise exceptions.bad_parameter
-            else:
-                raise exceptions.api_error(msg)
+            raise exceptions.api_error(msg)
 
         prices_model = models.Prices_Model(**prices)
 
         return prices_model
+
+
+class Petrol(Enum):
+    DIESEL = "diesel"
+    E5 = "e5"
+    E10 = "e10"
+    ALL = "all"
+
+
+class SortingMethod(Enum):
+    DISTANCE = "dist"
+    PRICE = "price"

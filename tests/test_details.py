@@ -27,7 +27,6 @@ class TestDetails(TestCase):
         EXPECTED_URL = f"https://creativecommons.tankerkoenig.de/json/detail.php?id=3a96b82f-7342-40ba-a1d7-9cde3fbb3c11&apikey={self.api_key}"
         self.assertEqual(req_url, EXPECTED_URL)
 
-
     @responses.activate
     def test_details_bad_api_key(self):
         tmp_client = client.Client(api_key="definitelyNotARealKey")
