@@ -1,5 +1,5 @@
 import tankerkoenig
-from tankerkoenig import client, exceptions, models
+from tankerkoenig import client, exceptions
 from unittest import TestCase
 from os import getenv
 import responses
@@ -27,8 +27,8 @@ class TestList(TestCase):
             "lat": 50.114634,
             "lng": 8.687657,
             "rad": 2,
-            "petrol_type": models.Petrol.DIESEL,
-            "sort": models.SortingMethod.DISTANCE,
+            "petrol_type": client.Petrol.DIESEL,
+            "sort": client.SortingMethod.DISTANCE,
         }
         _ = self.client.list(**params)
         req_url = responses.calls[0].request.url
@@ -54,8 +54,8 @@ class TestList(TestCase):
             "lat": 50.114634,
             "lng": 8.687657,
             "rad": 2,
-            "petrol_type": models.Petrol.DIESEL,
-            "sort": models.SortingMethod.DISTANCE,
+            "petrol_type": client.Petrol.DIESEL,
+            "sort": client.SortingMethod.DISTANCE,
         }
 
         with self.assertRaises(exceptions.invalid_api_key):
@@ -74,8 +74,8 @@ class TestList(TestCase):
             "lat": "NotARealCoordinate",
             "lng": 8.687657,
             "rad": 2,
-            "petrol_type": models.Petrol.DIESEL,
-            "sort": models.SortingMethod.DISTANCE,
+            "petrol_type": client.Petrol.DIESEL,
+            "sort": client.SortingMethod.DISTANCE,
         }
         with self.assertRaises(exceptions.bad_latitude):
             _ = self.client.list(**params)
@@ -94,8 +94,8 @@ class TestList(TestCase):
             "lat": 50.114634,
             "lng": 8.687657,
             "rad": -2,
-            "petrol_type": models.Petrol.DIESEL,
-            "sort": models.SortingMethod.DISTANCE,
+            "petrol_type": client.Petrol.DIESEL,
+            "sort": client.SortingMethod.DISTANCE,
         }
         with self.assertRaises(exceptions.bad_radius):
             _ = self.client.list(**params)
