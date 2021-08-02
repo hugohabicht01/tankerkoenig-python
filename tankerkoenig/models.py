@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import List, Any, Union, Dict
-from enum import Enum
 import uuid
 
+Price = Union[float, bool, None]
 # TODO: Move models into files for the different routes
 class List_PetrolStation(BaseModel):
     id: uuid.UUID
@@ -11,7 +11,10 @@ class List_PetrolStation(BaseModel):
     lat: float
     lng: float
     dist: float
-    price: float
+    price: Price
+    diesel: Price
+    e5: Price
+    e10: Price
     isOpen: bool = None
     houseNumber: str = None
     postCode: int = None
@@ -43,9 +46,9 @@ class Details_Station(BaseModel):
     overrides: List[str]
     wholeDay: bool
     isOpen: bool
-    e5: float
-    e10: float
-    diesel: float
+    e5: Price
+    e10: Price
+    diesel: Price
     lat: float
     lng: float
     state: Any
@@ -61,9 +64,9 @@ class Details_Model(BaseModel):
 
 class Prices_Station(BaseModel):
     status: str
-    e5: Union[float, bool, None]
-    e10: Union[float, bool, None]
-    diesel: Union[float, bool, None]
+    e5: Price
+    e10: Price
+    diesel: Price
 
 
 class Prices_Model(BaseModel):
@@ -71,15 +74,3 @@ class Prices_Model(BaseModel):
     license: str
     data: str
     prices: Dict[str, Prices_Station]
-
-
-class Petrol(Enum):
-    DIESEL = "diesel"
-    E5 = "e5"
-    E10 = "e10"
-    ALL = "all"
-
-
-class SortingMethod(Enum):
-    DISTANCE = "dist"
-    PRICE = "price"
