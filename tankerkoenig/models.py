@@ -1,13 +1,14 @@
 from pydantic import BaseModel
-from typing import List, Any, Union, Dict
+from typing import List, Any, Union, Dict, Optional
 import uuid
 
 Price = Union[float, bool, None]
+AddressPart = Union[str, bool, int, None]
 # TODO: Move models into files for the different routes
 class List_PetrolStation(BaseModel):
     id: uuid.UUID
     name: str
-    brand: str
+    brand: AddressPart
     lat: float
     lng: float
     dist: float
@@ -15,9 +16,9 @@ class List_PetrolStation(BaseModel):
     diesel: Price
     e5: Price
     e10: Price
-    isOpen: bool = None
-    houseNumber: str = None
-    postCode: int = None
+    isOpen: Union[bool, str, None]
+    houseNumber: AddressPart
+    postCode: AddressPart
 
 
 class List_PetrolStations(BaseModel):
@@ -36,22 +37,22 @@ class Details_OpeningTime(BaseModel):
 
 class Details_Station(BaseModel):
     id: str
-    name: str
-    brand: str
-    street: str
-    houseNumber: str
-    postCode: int
-    place: str
+    name: AddressPart
+    brand: AddressPart
+    street: AddressPart
+    houseNumber: AddressPart
+    postCode: AddressPart
+    place: AddressPart
     openingTimes: List[Details_OpeningTime]
     overrides: List[str]
-    wholeDay: bool
-    isOpen: bool
+    wholeDay: Union[bool, str, None]
+    isOpen: Union[bool, str, None]
     e5: Price
     e10: Price
     diesel: Price
     lat: float
     lng: float
-    state: Any
+    state: AddressPart
 
 
 class Details_Model(BaseModel):
